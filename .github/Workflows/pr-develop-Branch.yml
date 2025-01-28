@@ -16,7 +16,7 @@ on:
       # root directory of the sfdx project. This prevents the job from running
       # when changing non-salesforce files (like this yml file).
       paths:
-        - 'force-app/**'
+        - 'force-app/**' 
           
  
 # Jobs to be executed when the above conditions are met
