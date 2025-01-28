@@ -10,6 +10,7 @@ public class MyIterableTest {
 
         // Use a for loop to iterate over the iterable
         for (String str : iterable) {
+
             System.debug('str'+str);
         } 
         // Assertions (Optional: Verify the contents programmatically)
