@@ -12,7 +12,6 @@ public class MyIterableTest {
         for (String str : iterable) {
             System.debug('str'+str);
         } 
-
         // Assertions (Optional: Verify the contents programmatically)
         List<String> expected = new List<String>{ 'Hello', 'World' };
         List<String> result = new List<String>();
