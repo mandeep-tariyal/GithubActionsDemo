@@ -1,0 +1,33 @@
+name: Parse Pull Request
+
+on:
+  pull_request:
+    branches:
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Debug directory
+        run: ls -R
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Parse PR Body
+        run: |
+          echo $PR_BODY > ./pr_body.txt
+          node ./parsePR.js
+
+      - name: Export Apex Tests
+        run: |
+          TESTS=$(cat testsToRun.txt)
+          echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
+        shell: bash
