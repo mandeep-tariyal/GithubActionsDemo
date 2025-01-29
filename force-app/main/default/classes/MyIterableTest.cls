@@ -7,7 +7,7 @@ public class MyIterableTest {
 
         // Create an instance of MyIterable
         MyIterable iterable = new MyIterable(strings);
-
+  
         // Use a for loop to iterate over the iterable
         for (String str : iterable) {
 
