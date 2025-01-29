@@ -114,8 +114,20 @@ jobs:
                 sudo apt-get update
                 sudo apt install default-jdk
 
+
             - name: 'Verify Node.js Version'
               run: node -v
+
+            - name: 'Install Dependencies'
+              run: npm install
+
+            - name: 'Verify Node.js Version'
+              run: node -v
+
+            - name: 'Clear Dependency Cache'
+              run: |
+                rm -rf node_modules package-lock.json
+
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
