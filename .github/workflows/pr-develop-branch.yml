@@ -114,7 +114,10 @@ jobs:
                 sudo apt-get update
                 sudo apt install default-jdk
 
-
+            - name: 'Clear Dependency Cache'
+              run: |
+                rm -rf node_modules package-lock.json
+                
             - name: 'Verify Node.js Version'
               run: node -v
 
@@ -124,9 +127,7 @@ jobs:
             - name: 'Verify Node.js Version'
               run: node -v
 
-            - name: 'Clear Dependency Cache'
-              run: |
-                rm -rf node_modules package-lock.json
+            
 
 
             # Install SFDX scanner
