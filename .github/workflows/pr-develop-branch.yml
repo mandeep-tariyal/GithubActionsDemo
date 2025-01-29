@@ -114,15 +114,14 @@ jobs:
                 sudo apt-get update
                 sudo apt install default-jdk
 
-            - name: 'Clear Dependency Cache'
-              run: |
-                rm -rf node_modules package-lock.json
+            - name: 'Remove existing Node.js'
+              run: sudo rm -rf /usr/local/bin/node /usr/local/bin/npm /usr/local/lib/node_modules
 
-            - name: 'Verify Node.js Version'
-              run: node -v
+            - name: 'Install Node.js'
+              uses: actions/setup-node@v3
+              with:
+                node-version: '18.18.0'
 
-            - name: 'Install Dependencies'
-              run: npm install --legacy-peer-deps
 
             - name: 'Verify Node.js Version'
               run: node -v
