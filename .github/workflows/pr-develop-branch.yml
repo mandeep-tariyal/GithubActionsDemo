@@ -114,6 +114,9 @@ jobs:
                 sudo apt-get update
                 sudo apt install default-jdk
 
+              - name: Verify Node.js Version
+                run: node -v
+
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
               run: sfdx plugins:install @salesforce/sfdx-scanner
