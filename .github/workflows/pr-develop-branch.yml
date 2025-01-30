@@ -120,18 +120,12 @@ jobs:
             - name: 'Install Node.js'
               uses: actions/setup-node@v3
               with:
-                node-version: '18.18.0'
+                node-version: '20.0.0'
 
 
             - name: 'Verify Node.js Version'
-              run: node -v
+              run: node -v 
 
-            
-            - name: 'Override .nvmrc or .node-version'
-              run: echo '18.18.0' > .nvmrc
-
-              - name: 'Verify Node.js Version'
-              run: node -v
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
