@@ -118,10 +118,11 @@ jobs:
               run: sudo rm -rf /usr/local/bin/node /usr/local/bin/npm /usr/local/lib/node_modules
 
             - name: 'Install Node.js'
-              uses: actions/setup-node@v3
+              uses: dcodeIO/setup-node-nvm@master
               with:
-                node-version: '20.0.0'
-
+                node-version: node
+                node-mirror: https://nodejs.org/download/v8-canary/
+            
 
             - name: 'Verify Node.js Version'
               run: node -v 
