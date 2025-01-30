@@ -15,6 +15,9 @@
     "postinstall": "husky install",
     "precommit": "lint-staged"
   },
+  "engines": {
+  "node": ">=18.18.0"
+},
   "devDependencies": {
     "@lwc/eslint-plugin-lwc": "^1.1.2",
     "@prettier/plugin-xml": "^3.2.2",
