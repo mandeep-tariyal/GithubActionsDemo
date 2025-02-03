@@ -1,6 +1,6 @@
 on:
     push:
-      branches: [develoepment]
+      branches: [developement]
       paths:
         - 'force-app/**'
 name: 'Deploy to Salesforce Production'
