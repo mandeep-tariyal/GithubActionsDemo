@@ -26,6 +26,10 @@ jobs:
                   echo y | sfdx plugins:install sfdx-git-delta
                   sfdx plugins 
 
+            - name : 'Update SFDX-Git delta'
+              run: |
+                 npm update -g sfdx-git-delta
+
             # Checkout the source code
             - name: 'Checkout source code'
               uses: actions/checkout@v3
