@@ -1,71 +1,44 @@
-# Unique name for this workflow
-name: Deploy integration branch to integration and staging/uat orgs
-
-# Definition when the workflow should run
 on:
     push:
-      branches: [ developement ]
+      branches: [development]
       paths:
         - 'force-app/**'
-            
-
-# Jobs to be executed
+name: 'Deploy to Salesforce Production'
 jobs:
-    deploy-branch-to-int-and-staging-orgs:
-        runs-on: ubuntu-latest
-        if: ${{ github.actor != 'dependabot[bot]' }}
-        steps:
-            # Install Salesforce CLI
-            - name: 'Install Salesforce CLI'
-              run: |
-                 npm install -g sfdx-cli
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v3
 
-            # install SFDX-Git-Delta plugin - https://github.com/scolladon/sfdx-git-delta
-            - name: 'Installing sfdx git delta'
-              run: |                   
-                npm install -g sfdx-git-delta
-                 
-            
-            - name : 'SFDX version check'
-              run: |
-                sfdx --version
-                sfdx plugins 
+      - name: 'Setup Node'
+        uses: actions/setup-node@v3
+        with:
+          node-version: "14"
 
-            # Checkout the source code
-            - name: 'Checkout source code'
-              uses: actions/checkout@v3
-              with:
-                fetch-depth: 0
+      - name: 'Cache node modules'
+        uses: actions/cache@v3
+        id: npm_cache_id
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-cache-
+            ${{ runner.os }}-
 
-            # Store secret for both otgs
-            - name: 'Populate auth file with SFDX_URL secret of the integration and staging orgs'
-              shell: bash
-              run: |
-                  echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
-                  echo ${{ secrets.SFDX_STAGING_URL}} > ./SFDX_STAGING_URL.txt
+      - name: 'Install Dependencies'
+        if: steps.npm_cache_id.outputs.cache-hit != 'true'
+        run: npm ci
 
-            - name: 'Create delta packages for new, modified or deleted metadata'
-              run: | 
-                  mkdir changed-sources
-                  npx sfdx-git-delta source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+      # Store secret for both otgs
+       - name: 'Populate auth file with SFDX_URL secret of the integration and staging orgs'
+          shell: bash
+             run: |
+               echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
+               echo ${{ secrets.SFDX_STAGING_URL}} > ./SFDX_STAGING_URL.txt
+      # Authenticate to org
+        - name: 'Authenticate to Integration Org'
+          run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
 
-
-            # Authenticate to org
-            - name: 'Authenticate to Integration Org'
-              run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
-
-            - name: 'Deploy the entire branch to Integration org'
+      - name: 'Deploy the entire branch to Integration org'
               run: sfdx force:source:deploy -p force-app --testlevel RunLocalTests --json
-
-            - name: 'Deploy destructive changes (if any) to Integration org'
-              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
-
-            # Authenticate to org
-            - name: 'Authenticate to Staging Org to Staging org'
-              run: sfdx auth:sfdxurl:store -f ./SFDX_STAGING_URL.txt -s -a staging
-
-            - name: 'Deploy the entire branch'
-              run: sfdx force:source:deploy -p force-app --testlevel RunLocalTests --json
-
-            - name: 'Deploy destructive changes (if any) to Staging org'
-              run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings
