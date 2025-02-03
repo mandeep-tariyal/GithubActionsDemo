@@ -22,13 +22,14 @@ jobs:
 
             # install SFDX-Git-Delta plugin - https://github.com/scolladon/sfdx-git-delta
             - name: 'Installing sfdx git delta'
-              run: | 
-                  echo y | sfdx plugins:install sfdx-git-delta
-                  sfdx plugins 
-
-            - name : 'Update SFDX-Git delta'
+              run: |                   
+                npm install -g sfdx-git-delta
+                 
+            
+            - name : 'SFDX version check'
               run: |
-                 npm update -g sfdx-git-delta
+                sfdx --version
+                sfdx plugins 
 
             # Checkout the source code
             - name: 'Checkout source code'
@@ -46,7 +47,8 @@ jobs:
             - name: 'Create delta packages for new, modified or deleted metadata'
               run: | 
                   mkdir changed-sources
-                  sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+                  npx sfdx-git-delta source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
+
 
             # Authenticate to org
             - name: 'Authenticate to Integration Org'
