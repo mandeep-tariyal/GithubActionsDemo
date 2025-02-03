@@ -5,7 +5,7 @@ public class DataManager_controllerTest {
         DataManager_TestUtils.initOpps();
         
         DataManager_controller dm = new DataManager_controller();
-        System.debug('Test');
+        
         // UI Functions coverage
         dm.setStep2();
         dm.setStep3();

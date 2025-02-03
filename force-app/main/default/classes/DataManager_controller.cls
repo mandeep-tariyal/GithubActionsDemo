@@ -263,7 +263,6 @@ public class DataManager_controller {
     public void updateQuota() {
         if (quotaDoc == null) {
             quotaDoc = quotaManager.getQuotaCsv();
-            System.debug('Test2');
         }
     }
     
