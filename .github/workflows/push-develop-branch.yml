@@ -26,9 +26,14 @@ jobs:
             ${{ runner.os }}-npm-cache-
             ${{ runner.os }}-
 
+      - name: 'force install'
+        if: steps.npm_cache_id.outputs.cache-hit != 'true'
+        run: npm install --legacy-peer-deps
+
       - name: 'Install Dependencies'
         if: steps.npm_cache_id.outputs.cache-hit != 'true'
-        run: npm install ci
+        run: npm install ci 
+
 
       # Store secret for both otgs
       - name: 'Populate auth file with SFDX_URL secret of the integration and staging orgs'
