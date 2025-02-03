@@ -14,7 +14,7 @@ jobs:
       - name: 'Setup Node'
         uses: actions/setup-node@v3
         with:
-          node-version: "14"
+          node-version: "18.18.0"
 
       - name: 'Cache node modules'
         uses: actions/cache@v3
@@ -28,7 +28,7 @@ jobs:
 
       - name: 'Install Dependencies'
         if: steps.npm_cache_id.outputs.cache-hit != 'true'
-        run: npm ci
+        run: npm install ci
 
       # Store secret for both otgs
       - name: 'Populate auth file with SFDX_URL secret of the integration and staging orgs'
