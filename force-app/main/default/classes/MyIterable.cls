@@ -7,8 +7,8 @@ public class MyIterable implements Iterable<String> {
         System.debug('This.srsdfsding '+this.strings);
     }
 
-    // Iterator method
-    public Iterator<String> iterator() { 
+    // Iterator method 
+    public Iterator<String> iterator() {
         return strings.iterator(); 
     }
 }
