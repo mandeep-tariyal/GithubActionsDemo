@@ -7,7 +7,7 @@ public class MyIterableTest {
 
         // Create an instance of MyIterable
         MyIterable iterable = new MyIterable(strings);
-
+  
         // Use a for loop to iterate over the iterable
         for (String str : iterable) {
 
@@ -15,7 +15,7 @@ public class MyIterableTest {
         } 
         // Assertions (Optional: Verify the contents programmatically)
         List<String> expected = new List<String>{ 'Hello', 'World' };
-        List<String> result = new List<String>();
+        List<String> result = new List<String>(); 
         for (String str : iterable) {
             result.add(str);
         }
