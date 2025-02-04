@@ -1,22 +1,21 @@
 on:
-    push:
-      branches: [developement]
-      paths:
-        - 'force-app/**'
-name: 'Deploy to Salesforce Production'
+  push:
+    branches:
+      - "developement"
+name: Deploy to Salesforce Production
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 'Checkout'
+      - name: Checkout
         uses: actions/checkout@v3
 
-      - name: 'Setup Node'
+      - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: "18.18.0"
+          node-version: "14"
 
-      - name: 'Cache node modules'
+      - name: Cache node modules
         uses: actions/cache@v3
         id: npm_cache_id
         with:
@@ -26,13 +25,9 @@ jobs:
             ${{ runner.os }}-npm-cache-
             ${{ runner.os }}-
 
-      - name: 'force install'
+      - name: Install Dependencies
         if: steps.npm_cache_id.outputs.cache-hit != 'true'
-        run: npm install --legacy-peer-deps
-
-      - name: 'Install Dependencies'
-        if: steps.npm_cache_id.outputs.cache-hit != 'true'
-        run: npm install ci 
+        run: npm ci
 
 
       # Store secret for both otgs
