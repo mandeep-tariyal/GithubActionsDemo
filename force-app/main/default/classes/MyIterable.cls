@@ -7,7 +7,6 @@ public class MyIterable implements Iterable<String> {
         System.debug('This.srsdfsdi]]ng '+this.strings);
     }
     // Iterator method    
-  
     public Iterator<String> iterator() {
         return strings.iterator(); 
     }
