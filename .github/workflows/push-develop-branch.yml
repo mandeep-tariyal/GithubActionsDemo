@@ -51,6 +51,12 @@ jobs:
         run: |
             echo ${{ secrets.SFDX_INTEGRATION_URL}} > ./SFDX_INTEGRATION_URL.txt
             echo ${{ secrets.SFDX_STAGING_URL}} > ./SFDX_STAGING_URL.txt
+            
+      - name: Install Salesforce CLI
+        run: |
+          npm install --global sfdx-cli
+          echo "SFDX installed successfully"
+          sfdx --version
       # Authenticate to org
       - name: 'Authenticate to Integration Org'
         run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
