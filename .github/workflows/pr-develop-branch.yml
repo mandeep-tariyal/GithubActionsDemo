@@ -11,7 +11,7 @@ on:
       # The branches filter allows to specify that this workflow should only
       # run if the branch name is "develop". This way we prevent this workflow
       # from running when PRs are opened on other branches
-      branches: [ developement ]
+      branches: [ developements ]
       # We only care about changes to the force-app directory, which is the
       # root directory of the sfdx project. This prevents the job from running
       # when changing non-salesforce files (like this yml file).
@@ -33,7 +33,7 @@ jobs:
             # Now we install nodejs in the VM, and specify version 14
             - uses: actions/setup-node@v3
               with:
-                node-version: '14'
+                node-version: '18.18.0'
 
             # The idea is that the VM can access your remote repository
             # because your repository is an sfdx project.
@@ -92,11 +92,7 @@ jobs:
             # Now Install Salesforce CLI
             - name: 'Install Salesforce CLI'
               run: |
-                  wget https://developer.salesforce.com/media/salesforce-cli/sfdx/channels/stable/sfdx-linux-x64.tar.xz
-                  mkdir ~/sfdx
-                  tar xJf sfdx-linux-x64.tar.xz -C ~/sfdx --strip-components 1
-                  echo "$HOME/sfdx/bin" >> $GITHUB_PATH
-                  ~/sfdx/bin/sfdx version
+                 npm install -g sfdx-cli
 
             # Then we install the SFDX-Git-Delta plugin - https://github.com/scolladon/sfdx-git-delta
             # This is an awesome plugin that allows us to extract a package.xml with the metadata
@@ -113,6 +109,20 @@ jobs:
               run: |
                 sudo apt-get update
                 sudo apt install default-jdk
+
+            - name: 'Remove existing Node.js'
+              run: sudo rm -rf /usr/local/bin/node /usr/local/bin/npm /usr/local/lib/node_modules
+
+            - name: 'Install Node.js'
+              uses: dcodeIO/setup-node-nvm@master
+              with:
+                node-version: '20.0.0'
+                node-mirror: https://nodejs.org/dist/
+            
+
+            - name: 'Verify Node.js Version'
+              run: node -v 
+
 
             # Install SFDX scanner
             - name: 'Installing SFDX scanner'
@@ -162,7 +172,7 @@ jobs:
 
             # Now we upload the .sarif file as explained in the previous step
             - name: Upload SARIF file
-              uses: github/codeql-action/upload-sarif@v1
+              uses: github/codeql-action/upload-sarif@v3
               with:
                 sarif_file: changed-sources/apexScanResults.sarif
 
