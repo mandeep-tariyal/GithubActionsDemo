@@ -41,8 +41,9 @@ jobs:
           if [ "$lockfile_exists" = "true" ]; then
             npm ci
           else
-            npm install
+            npm install --legacy-peer-deps
           fi
+
 
       # Store secret for both otgs
       - name: 'Populate auth file with SFDX_URL secret of the integration and staging orgs'
