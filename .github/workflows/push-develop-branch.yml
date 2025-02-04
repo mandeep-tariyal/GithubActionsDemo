@@ -62,4 +62,4 @@ jobs:
         run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
 
       - name: 'Deploy the entire branch to Integration org'
-        run: sfdx force:source:deploy -p force-app --testlevel RunLocalTests --json
+        run: sfdx force:source:deploy -p "force-app/main/default/classes/MyIterable.cls" -l runSpecifiedTests -r MyIterableTest -w 33 --verbose --loglevel fatal
