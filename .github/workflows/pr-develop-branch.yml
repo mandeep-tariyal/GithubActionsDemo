@@ -78,7 +78,9 @@ jobs:
                git config --global user.email "github-actions@github.com"
                git add .github/test-classes/pr-$PR_NUMBER.txt
                git commit -m "Store test classes for PR #$PR_NUMBER"
-               git push origin -u developement
+               git checkout -b development
+               git push --set-upstream origin development
+
 
             - name: 'Retrieve Test Classes for PR'
               run: |
