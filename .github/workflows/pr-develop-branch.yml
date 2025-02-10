@@ -80,6 +80,8 @@ jobs:
                git commit -m "Store test classes for PR #$PR_NUMBER"
                git checkout -b developement
                git push --set-upstream origin developement
+               trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
+
 
 
             - name: 'Retrieve Test Classes for PR'
@@ -111,6 +113,8 @@ jobs:
                 TESTS=$(cat testsToRun.txt)       
                 echo "APEX_TESTS=$TESTS" >> $
                    fi
+                    trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
+
                  
                   
             # Now Install Salesforce CLI
