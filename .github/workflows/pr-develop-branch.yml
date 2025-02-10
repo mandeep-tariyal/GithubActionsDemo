@@ -82,19 +82,7 @@ jobs:
                git push --set-upstream origin developement
                trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
 
-            - name: 'Cleanup on Failure'
-              if: failure()
-              run: |
-                 PR_NUMBER=${{ github.event.pull_request.number }}
-                 FILE_PATH=".github/test-classes/pr-$PR_NUMBER.txt"
-             
-                 if [ -f "$FILE_PATH" ]; then
-                   echo "Removing test class file due to failure: $FILE_PATH"
-                   rm -f "$FILE_PATH"
-                 fi
-
-
-
+            
             - name: 'Retrieve Test Classes for PR'
               run: |
                    PR_NUMBER=${{ github.event.pull_request.number }}
@@ -125,7 +113,16 @@ jobs:
                 echo "APEX_TESTS=$TESTS" >> $
                    fi
                     trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
-
+                    - name: 'Cleanup on Failure'
+                    if: failure()
+                    run: |
+                       PR_NUMBER=${{ github.event.pull_request.number }}
+                       FILE_PATH=".github/test-classes/pr-$PR_NUMBER.txt"
+                   
+                       if [ -f "$FILE_PATH" ]; then
+                         echo "Removing test class file due to failure: $FILE_PATH"
+                         rm -f "$FILE_PATH"
+                       fi
                  
                   
             # Now Install Salesforce CLI
