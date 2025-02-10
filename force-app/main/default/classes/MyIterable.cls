@@ -8,6 +8,6 @@ public class MyIterable implements Iterable<String> {
     }
     // Iterator method 
     public Iterator<String> iterator() { 
-        return strings.iterator();
+        return strings.iterator();  
     }
 }
