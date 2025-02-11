@@ -80,13 +80,13 @@ jobs:
             # Update the step that extracts test class names from the PR body to save them to a file uniquely associated with the PR.
             - name: 'Store Test Classes in Git'
               run: |
-               git checkout ${{ github.ref }}
+               git checkout developement
                PR_NUMBER=${{ github.event.pull_request.number }}
                TESTS=${{ steps.parse_tests.outputs.test_classes }}
                echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt               
                git add .github/test-classes/pr-$PR_NUMBER.txt
                git commit -m "Store test classes for PR #$PR_NUMBER"
-               git push origin ${{ github.ref }}
+               git push origin -u developement
                trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
 
             
