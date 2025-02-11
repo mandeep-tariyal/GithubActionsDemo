@@ -67,19 +67,27 @@ jobs:
             # Once a developer has specified a list of classes to run, we need to be able
             # to extract this information from the PR, and pass it on the the VM.
 
-            
-
+            - name : 'Read PR Body and parse Test classes'
+              id: parse_tests  # Add an ID to the step
+              env:
+               PR_BODY: ${{ github.event.pull_request.body }}
+              run: |
+                echo $PR_BODY > ./pr_body.txt
+                node ./parsePR.js              
+                TESTS=$(cat testsToRun.txt)       
+                echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
+                echo "::set-output name=test_classes::$TESTS"  # Set output for the step
             # Update the step that extracts test class names from the PR body to save them to a file uniquely associated with the PR.
             - name: 'Store Test Classes in Git'
               run: |
                PR_NUMBER=${{ github.event.pull_request.number }}
-               echo "${{ env.APEX_TESTS }}" > .github/test-classes/pr-$PR_NUMBER.txt
+               TESTS=${{ steps.parse_tests.outputs.test_classes }} # Access the output
+               echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt
                git config --global user.name "github-actions"
                git config --global user.email "github-actions@github.com"
                git add .github/test-classes/pr-$PR_NUMBER.txt
                git commit -m "Store test classes for PR #$PR_NUMBER"
-               git checkout -b developement
-               git push --set-upstream origin developement
+               git push origin pr-test-classes-%PR_NUMBER
                trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
 
             
@@ -113,16 +121,16 @@ jobs:
                 echo "APEX_TESTS=$TESTS" >> $
                    fi
                     trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
-                    - name: 'Cleanup on Failure'
-                    if: failure()
-                    run: |
-                       PR_NUMBER=${{ github.event.pull_request.number }}
-                       FILE_PATH=".github/test-classes/pr-$PR_NUMBER.txt"
+            - name: 'Cleanup on Failure'
+              if: failure()
+              run: |
+               PR_NUMBER=${{ github.event.pull_request.number }}
+               FILE_PATH=".github/test-classes/pr-$PR_NUMBER.txt"
                    
-                       if [ -f "$FILE_PATH" ]; then
-                         echo "Removing test class file due to failure: $FILE_PATH"
-                         rm -f "$FILE_PATH"
-                       fi
+               if [ -f "$FILE_PATH" ]; then
+               echo "Removing test class file due to failure: $FILE_PATH"
+               rm -f "$FILE_PATH"
+               fi
                  
                   
             # Now Install Salesforce CLI
