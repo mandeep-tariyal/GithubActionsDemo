@@ -87,7 +87,7 @@ jobs:
                git config --global user.email "github-actions@github.com"
                git add .github/test-classes/pr-$PR_NUMBER.txt
                git commit -m "Store test classes for PR #$PR_NUMBER"
-               git push origin pr-test-classes-$PR_NUMBER
+               git push origin HEAD
                trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
 
             
