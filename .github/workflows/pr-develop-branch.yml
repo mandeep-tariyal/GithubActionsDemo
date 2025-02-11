@@ -83,7 +83,9 @@ jobs:
                git checkout developement
                PR_NUMBER=${{ github.event.pull_request.number }}
                TESTS=${{ steps.parse_tests.outputs.test_classes }}
-               echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt               
+               echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt
+               git config --global user.name "github-actions"
+               git config --global user.email "github-actions@github.com"               
                git add .github/test-classes/pr-$PR_NUMBER.txt
                git commit -m "Store test classes for PR #$PR_NUMBER"
                git push origin -u developement
