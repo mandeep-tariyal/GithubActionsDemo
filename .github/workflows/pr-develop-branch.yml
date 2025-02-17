@@ -77,36 +77,7 @@ jobs:
                 TESTS=$(cat testsToRun.txt)       
                 echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
                 echo "::set-output name=test_classes::$TESTS"  
-            # Update the step that extracts test class names from the PR body to save them to a file uniquely associated with the PR.
-            - name: 'Store Test Classes in Git'
-              run: |
-               git checkout developement
-               PR_NUMBER=${{ github.event.pull_request.number }}
-               TESTS=${{ steps.parse_tests.outputs.test_classes }}
-               echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt
-               git config --global user.name "github-actions"
-               git config --global user.email "github-actions@github.com"               
-               git add .github/test-classes/pr-$PR_NUMBER.txt
-               git commit -m "Store test classes for PR #$PR_NUMBER"
-               git push origin -u developement
-               trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
-
-            
-            - name: 'Retrieve Test Classes for PR'
-              run: |
-                   PR_NUMBER=${{ github.event.pull_request.number }}
-                   if [ -f .github/test-classes/pr-$PR_NUMBER.txt ]; then
-                     TESTS=$(cat .github/test-classes/pr-$PR_NUMBER.txt)
-                     echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-                    else
-                    # Set default APEX_TESTS if the file doesn't exist.
-                    echo "APEX_TESTS" 
-                    # The pull request body is available through the github context object
-                    # Set PR_BODY environment variable
-                    echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV # Or export if needed later in the same shell script
-                   fi
-
-          
+           
                  
                   
             # Now Install Salesforce CLI
@@ -178,46 +149,7 @@ jobs:
                   mkdir changed-sources
                   sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
 
-            - name: 'Create force-app directory (if it doesnt exist)' # Add this!
-              run: |
-                    if [ ! -d "changed-sources/force-app" ]; then
-                      mkdir -p changed-sources/force-app # -p creates parent dirs if needed
-                    fi
-            # Now we can use the sfdx scanner to scan the code in the delta directory
-            # The output of the scan is stored in a file called apexScanResults.sarif
-
-            # The .sarif file can later be uploaded to github, so that we can see the 
-            # results of the scan directly from the PR.
-            - name: 'Verify changed-sources directory and contents'
-              run: |
-               if [ -d "changed-sources" ]; then
-               echo "changed-sources directory exists."
-                  ls -l changed-sources/
-                  tree changed-sources/ # Optional, as before
-
-                  # Loop through files and display contents (for text files)
-                  find changed-sources/ -type f -print0 | while IFS= read -r -d $'\0' file; do
-                    echo "----------------------------------------"
-                    echo "Contents of: $file"
-                    echo "----------------------------------------"
-                  if [[ "$file" == *.xml ]]; then  # Improved XML check
-                            if [[ -s "$file" ]]; then
-                              cat "$file"
-                            else
-                              echo "File is empty."
-                            fi
-                  elif [[ $(file -b "$file") == "application/zip"* ]]; then
-                    echo "It's a zip file, skipping content display."
-                    unzip -l "$file"
-                  else 
-                    echo "Not a plain text or XML file, skipping content display."
-                    file "$file"
-                  fi
-                done
-               else
-                  echo "ERROR: changed-sources directory DOES NOT exist."
-               
-               fi
+          
             - name: 'Scan code'
               run: |
                   cd changed-sources
@@ -248,14 +180,3 @@ jobs:
 
             - name: 'Deploy destructive changes (if any)'
               run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
-
-            - name: 'Cleanup on Failure'
-              if: failure()
-              run: |
-               PR_NUMBER=${{ github.event.pull_request.number }}
-               FILE_PATH=".github/test-classes/pr-$PR_NUMBER.txt"
-                   
-               if [ -f "$FILE_PATH" ]; then
-               echo "Removing test class file due to failure: $FILE_PATH"
-               rm -f "$FILE_PATH"
-               fi
