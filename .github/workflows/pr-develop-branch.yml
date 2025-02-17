@@ -201,7 +201,11 @@ jobs:
                     echo "Contents of: $file"
                     echo "----------------------------------------"
                    if [[ $(file -b "$file") == "text/plain"* || $(file -b "$file") == "application/xml"* || $(file -b "$file") == "text/xml"* ]]; then
-                    cat "$file"
+                    if [[ -s "$file" ]]; then 
+                   cat "$file"
+                   else
+                   echo "File is Empty"
+                   fi
                   elif [[ $(file -b "$file") == "application/zip"* ]]; then
                     echo "It's a zip file, skipping content display."
                     unzip -l "$file"
