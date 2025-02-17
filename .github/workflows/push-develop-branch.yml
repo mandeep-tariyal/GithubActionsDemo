@@ -2,7 +2,7 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - "developement"
+      - "developements"
 
 name: Deploy to Salesforce Production
 
