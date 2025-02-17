@@ -97,7 +97,7 @@ jobs:
                    PR_NUMBER=${{ github.event.pull_request.number }}
                    if [ -f .github/test-classes/pr-$PR_NUMBER.txt ]; then
                      TESTS=$(cat .github/test-classes/pr-$PR_NUMBER.txt)
-                     echo "APEX_TESTS=$TESTS" >> $GITHU B_ENV
+                     echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
                     else
                     # Set default APEX_TESTS if the file doesn't exist.
                     echo "APEX_TESTS=MyIterableTest" >> $GITHUB_ENV  # Or export if needed later in the same shell script
@@ -105,7 +105,7 @@ jobs:
                     # Set PR_BODY environment variable
                     echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV # Or export if needed later in the same shell script
                    fi
-                               
+
             - name: 'Cleanup on Failure'
               if: failure()
               run: |
