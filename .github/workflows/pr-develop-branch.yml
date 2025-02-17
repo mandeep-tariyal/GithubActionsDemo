@@ -178,6 +178,11 @@ jobs:
                   mkdir changed-sources
                   sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/ 
 
+            - name: 'Create force-app directory (if it doesnt exist)' # Add this!
+              run: |
+                    if [ ! -d "changed-sources/force-app" ]; then
+                      mkdir -p changed-sources/force-app # -p creates parent dirs if needed
+                    fi
             # Now we can use the sfdx scanner to scan the code in the delta directory
             # The output of the scan is stored in a file called apexScanResults.sarif
 
