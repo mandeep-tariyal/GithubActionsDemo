@@ -190,8 +190,8 @@ jobs:
             # results of the scan directly from the PR.
             - name: 'Verify changed-sources directory and contents'
               run: |
-                if [ -d "changed-sources" ]; then
-                  echo "changed-sources directory exists."
+               if [ -d "changed-sources" ]; then
+               echo "changed-sources directory exists."
                   ls -l changed-sources/
                   tree changed-sources/ # Optional, as before
 
@@ -200,20 +200,20 @@ jobs:
                     echo "----------------------------------------"
                     echo "Contents of: $file"
                     echo "----------------------------------------"
-                    if [[ $(file -b "$file") == "text/plain"* ]]; then # Check if it's a text file
-                      cat "$file"  # Display file contents
-                    elif [[ $(file -b "$file") == "application/zip"* ]]; then # Check if it's a zip file
-                      echo "It's a zip file, skipping content display."
-                      unzip -l "$file" # List the content of zip file
-                    else
-                      echo "Not a plain text file, skipping content display."
-                      file "$file" # Print the file type for other files
-                    fi
-                  done
-                else
+                   if [[ $(file -b "$file") == "text/plain"* || $(file -b "$file") == "application/xml"* || $(file -b "$file") == "text/xml"* ]]; then
+                    cat "$file"
+                  elif [[ $(file -b "$file") == "application/zip"* ]]; then
+                    echo "It's a zip file, skipping content display."
+                    unzip -l "$file"
+                  else 
+                    echo "Not a plain text or XML file, skipping content display."
+                    file "$file"
+                  fi
+                done
+               else
                   echo "ERROR: changed-sources directory DOES NOT exist."
-                fi
-
+               
+               fi
             - name: 'Scan code'
               run: |
                   cd changed-sources
