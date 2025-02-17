@@ -4,7 +4,7 @@ public class MyIterable implements Iterable<String> {
     // Constructor to initialize the list
     public MyIterable(List<String> strings) {
         this.strings = strings;
-        System.debug('This.srsdfsding '+this.strings);
+        System.debug('Thi '+this.strings);
     }
 
     // Iterator method
