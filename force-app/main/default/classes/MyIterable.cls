@@ -6,9 +6,8 @@ public class MyIterable implements Iterable<String> {
         this.strings = strings;
         System.debug('Thi '+this.strings);
     }
-
     // Iterator method
     public Iterator<String> iterator() {
         return strings.iterator();
-    }
+     }   
 }
