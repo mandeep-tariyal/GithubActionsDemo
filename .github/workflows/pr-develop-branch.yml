@@ -188,6 +188,16 @@ jobs:
 
             # The .sarif file can later be uploaded to github, so that we can see the 
             # results of the scan directly from the PR.
+            - name: 'Verify changed-sources directory and contents'  # New step for verification
+              run: |
+                if [ -d "changed-sources" ]; then
+                  echo "changed-sources directory exists."
+                  ls -l changed-sources/  # List files and directories within changed-sources
+                  tree changed-sources/ # Show a tree view (if 'tree' is installed; you might need to install it)
+                  find changed-sources/ -type f # List only the files in the directory
+                else
+                  echo "ERROR: changed-sources directory DOES NOT exist."
+                fi
 
             - name: 'Scan code'
               run: |
