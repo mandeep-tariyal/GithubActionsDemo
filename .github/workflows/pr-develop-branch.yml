@@ -100,7 +100,7 @@ jobs:
                      echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
                     else
                     # Set default APEX_TESTS if the file doesn't exist.
-                    echo "APEX_TESTS=MyIterableTest" >> $GITHUB_ENV  # Or export if needed later in the same shell script
+                    echo "APEX_TESTS" 
                     # The pull request body is available through the github context object
                     # Set PR_BODY environment variable
                     echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV # Or export if needed later in the same shell script
@@ -123,11 +123,6 @@ jobs:
               run: | 
                   echo y | sfdx plugins:install sfdx-git-delta
                   sfdx plugins 
-
-            - name: 'Create delta packages for new, modified or deleted metadata'
-              run: | 
-                      mkdir changed-sources
-                      sfdx sgd:source:delta --to "HEAD" --from "HEAD^" --output changed-sources/ --generate-delta --source force-app/
 
             # Install java as it is required for the next step
             - name: 'Installing java'
@@ -219,7 +214,7 @@ jobs:
 
             - name: 'Deploy destructive changes (if any)'
               run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
-              
+
             - name: 'Cleanup on Failure'
               if: failure()
               run: |
