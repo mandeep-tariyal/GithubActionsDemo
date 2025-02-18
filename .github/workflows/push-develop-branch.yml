@@ -113,4 +113,4 @@ jobs:
            echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
 
       - name: 'Deploy the entire branch to Integration org'
-        run: sfdx force:source:deploy -p "chnaged-sources/force-app" -l --testlevel RunSpecifiedTests -r ${{env.APEX_TESTS}} -w 33 --verbose --loglevel fatal
+        run: sfdx force:source:deploy -p "chnaged-sources/force-app" -l RunSpecifiedTests -r ${{env.APEX_TESTS}} -w 33 --verbose --loglevel fatal
