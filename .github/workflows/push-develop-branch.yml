@@ -76,20 +76,7 @@ jobs:
       # Authenticate to org
       - name: 'Authenticate to Integration Org'
         run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
-
-      - name: 'Retrieve Test Classes for PR'
-        run: |
-             PR_NUMBER=${{ github.event.pull_request.number }}
-             if [ -f .github/test-classes/pr-$PR_NUMBER.txt ]; then
-               TESTS=$(cat .github/test-classes/pr-$PR_NUMBER.txt)
-               echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
-              else
-              # Set default APEX_TESTS if the file doesn't exist.
-              echo "APEX_TESTS" 
-              # The pull request body is available through the github context object
-              # Set PR_BODY environment variable
-              echo "PR_BODY=${{ github.event.pull_request.body }}" >> $GITHUB_ENV # Or export if needed later in the same shell script
-             fi
+              
       - name: 'Read PR Body'
         env:
                 # The pull request body is available through the github context object
