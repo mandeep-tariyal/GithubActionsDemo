@@ -78,18 +78,7 @@ jobs:
                 echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
                 echo "::set-output name=test_classes::$TESTS"  
            
-            - name: 'Store Test Classes in Git'
-              run: |
-                 git checkout developement
-                 PR_NUMBER=${{ github.event.pull_request.number }}
-                 TESTS=${{ steps.parse_tests.outputs.test_classes }}
-                 echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt
-                 git config --global user.name "github-actions"
-                 git config --global user.email "github-actions@github.com"               
-                 git add .github/test-classes/pr-$PR_NUMBER.txt
-                 git commit -m "Store test classes for PR #$PR_NUMBER"
-                 git push origin -u developement
-                 trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR     
+                 
                   
             # Now Install Salesforce CLI
             - name: 'Install Salesforce CLI'
@@ -191,7 +180,19 @@ jobs:
 
             - name: 'Deploy destructive changes (if any)'
               run: sfdx force:mdapi:deploy -d "changed-sources/destructiveChanges" --checkonly --ignorewarnings 
-              
+
+            - name: 'Store Test Classes in Git'
+              run: |
+                 git checkout developement
+                 PR_NUMBER=${{ github.event.pull_request.number }}
+                 TESTS=${{ steps.parse_tests.outputs.test_classes }}
+                 echo "$TESTS" > .github/test-classes/pr-$PR_NUMBER.txt
+                 git config --global user.name "github-actions"
+                 git config --global user.email "github-actions@github.com"               
+                 git add .github/test-classes/pr-$PR_NUMBER.txt
+                 git commit -m "Store test classes for PR #$PR_NUMBER"
+                 git push origin -u developement
+                 trap 'echo "Job failed, removing $FILE_PATH"; rm -f $FILE_PATH' ERR
             - name: 'Cleanup on Failure'
               if: failure()
               run: |
