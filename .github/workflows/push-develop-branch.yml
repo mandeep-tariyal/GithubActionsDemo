@@ -76,7 +76,7 @@ jobs:
       # Authenticate to org
       - name: 'Authenticate to Integration Org'
         run: sfdx auth:sfdxurl:store -f ./SFDX_INTEGRATION_URL.txt -s -a integration
-              
+
       - name: 'Read PR Body'
         env:
                 # The pull request body is available through the github context object
@@ -100,4 +100,4 @@ jobs:
            echo "APEX_TESTS=$TESTS" >> $GITHUB_ENV
 
       - name: 'Deploy the entire branch to Integration org'
-        run: sfdx force:source:deploy -p "chnaged-sources/force-app" -l RunSpecifiedTests -r ${{env.APEX_TESTS}} -w 33 --verbose --loglevel fatal
+        run: sfdx force:source:deploy -p "changed-sources/force-app" -l RunSpecifiedTests -r ${{env.APEX_TESTS}} -w 33 --verbose --loglevel fatal
